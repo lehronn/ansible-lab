@@ -1,10 +1,3 @@
-#naming standard for hosts
-#
-#an + role + number
-#ansible + c/ws/db/nfs/etc + 1,2,3,4,5,etc
-#
-
-
 [s0_controllers]
 anc0
 anc1
@@ -12,6 +5,13 @@ anc1
 [s1_controllers]
 anc2
 anc3
+
+[nodes]
+ann0
+ann1
+ann2
+ann3
+ann4
 
 [s0_webservers]
 anws0
