@@ -1,0 +1,62 @@
+#naming standard for hosts
+#
+#an + role + number
+#ansible + c/ws/db/nfs/etc + 1,2,3,4,5,etc
+#
+
+
+[s0_controllers]
+anc0
+anc1
+
+[s1_controllers]
+anc2
+anc3
+
+[s0_webservers]
+anws0
+anws1
+anws2
+anws3
+
+[s1_webservers]
+anws4
+anws5
+anws6
+
+[s0_dbservers]
+andb0
+andb2
+
+[s1_dbservers]
+andb1
+andb3
+
+# controllers in all geos
+[controllers:children]
+s0_controllers
+s1_controllers
+
+# webservers in all geos
+[webservers:children]
+s0_webservers
+s1_webservers
+
+# dbservers in all geos
+[dbservers:children]
+s0_dbservers
+s1_dbservers
+
+# everything in the site 0 geo
+[s0:children]
+s0_controllers
+s0_webservers
+s0_dbservers
+
+# everything in the site 1 geo
+[s1:children]
+s1_controllers
+s1_webservers
+s1_dbservers
+
+

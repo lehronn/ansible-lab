@@ -1,0 +1,9 @@
+# list of files which git cannot push and pull.
+#
+#files
+#/roles/common/files/*
+#/roles/controler/files/*
+#/roles/monitoring/files/*
+#/roles/storage/files/*
+#/roles/webserv/files/*
+
