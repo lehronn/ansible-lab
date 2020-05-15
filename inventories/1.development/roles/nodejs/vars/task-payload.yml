@@ -1,0 +1,8 @@
+---
+# nodejs task-payload
+vars:
+app_name: 18-Chat-Application-master
+deploy_app_file: 18-Chat-Application-master.zip
+app_pid: 0
+deploy_app_port: 3000
+deploy_app_protocol: tcp

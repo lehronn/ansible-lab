@@ -1,0 +1,10 @@
+.MessageForm {
+    display: flex;
+    flex-direction: row;
+}
+
+.MessageInput {
+    flex: 1;
+    border: 0;
+    padding: 20px 20px 20px 20px;
+}

@@ -1,0 +1,7 @@
+---
+# nfs task-payload
+nfs_domain_name: edu.share
+nfs_share_path: /home/nfs/shares
+nfs_share_adress: 192.168.122.121/24
+nfs_share_client_source: 192.168.122.121
+nfs_share_client_mp: /mnt/shares

@@ -1,0 +1,16 @@
+---
+# tasks file for ngix
+
+# instalacja ngix playbook
+# install php common
+# instalacja phpmyadmin (chyba na ngix to musi byc...)
+# enablowanie common
+# dodanie usermoda?? w ngixie jest coś takiego?
+#
+# usunięcie ngix playbook
+# remove paczki z commona
+#
+# start stop restart ngix
+# z commona
+
+# jakieś połączenie z db? plabook nie wiem jak to tam działa dokładnie chyba nie trzeba, to apki się mają łączyć

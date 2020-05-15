@@ -1,0 +1,22 @@
+---
+- hosts: ann2
+  roles:
+    - nfs
+  tasks:
+  - name: add nfs user
+    user:
+      name: "{{ nfs_user }}"
+      uid: "{{ nfs_user_uid }}"
+      state: present
+
+  - name: nfs-utils installation
+    package:
+      name: nfs-utils
+      state: present
+
+  - name: change nfs domain name
+    lineinfile:
+      firstmatch: yes
+      path: /etc/idmapd.conf
+      regexp: '^#Domain = '
+      line: Domain = {{ nfs_domain_name }}

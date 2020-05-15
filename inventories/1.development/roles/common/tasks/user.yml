@@ -1,0 +1,21 @@
+---
+- name: Configure important user consistently
+  hosts: nodes
+  vars:
+    my_action: "{{ vaction }}"
+    my_login: "{{ vlogin }}"
+    my_uid: "{{ vuid }}"
+  tasks:
+    - name: add user on specific uid and login
+      user:
+        name: "{{ my_login }}"
+        uid: "{{ my_uid }}"
+        state: present
+      when: "{{ my_action == 'add' }}"
+
+    - name: remove user on specific uid and login
+      user:
+        name: "{{ my_login }}"
+        uid: "{{ my_uid }}"
+        state: absent
+      when: "{{ my_action == 'rm' }}"

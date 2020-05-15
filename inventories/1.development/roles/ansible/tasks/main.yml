@@ -1,0 +1,13 @@
+---
+# tasks file for ansible
+
+## deploy ansible playbook
+# instalacja ansible #common
+# instalacja gita #common
+# pobranie najnowszego repo z gita
+
+## dodanie folderu z projektem ansible plabook
+
+## usunięcie folderu z projektem ansible plabook
+
+## aktualizacja folderu z projektem ansible plabook

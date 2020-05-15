@@ -1,0 +1,31 @@
+---
+
+- hosts: nodejs
+  roles:
+    - nodejs
+  tasks:
+  - name: stop app by pm2
+    shell: pm2 stop {{ app_pid }}
+    args:
+      executable: /bin/bash
+
+  - name: delete app by pm2
+    shell: pm2 delete {{ app_pid }}
+    args:
+      executable: /bin/bash
+
+  - name: status app by pm2
+    shell: pm2 list
+    args:
+      executable: /bin/bash
+
+  - name: remove nodejs app from controller in node catalog
+    file:
+      path: "{{ nodejs_app_directory_runtime | quote }}/{{ app_name | quote }}"
+      state: absent
+
+  - name: remove port to firewalld
+    firewalld:
+      port: "{{ deploy_app_port }}/{{ deploy_app_protocol }}"
+      permanent: yes
+      state: disabled

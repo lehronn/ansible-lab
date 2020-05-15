@@ -1,0 +1,201 @@
+---
+# tasks file for nodejs
+
+- include_role:
+    name: common
+
+- name: add nodejs user
+  user:
+    name: "{{ nodejs_user }}"
+    uid: "{{ nodejs_user_uid }}"
+    state: present
+
+- name: make directory for nodejs apps
+  file:
+    path: "{{ nodejs_app_directory_runtime }}"
+    mode: "{{ nodejs_app_directory_perm }}"
+    state: directory
+
+- name: nodejs installation
+  package:
+    name: nodejs
+    state: present
+
+- name: add nodejs daemon to firewalld
+  firewalld:
+    service: nodejs
+    permanent: yes
+    state: enabled
+
+- name: add port 90 to firewalld
+  firewalld:
+    port: 90/tcp
+    permanent: yes
+    state: enabled
+
+- name: nodejs tools installation
+  package:
+    name: npm git
+    state: present
+
+- name: install pm2 menager by npm
+  shell: npm install pm2@latest -g
+  args:
+    executable: /bin/bash
+
+- name: remove pm2 menager by npm
+  shell: npm remove pm2@latest -g
+  args:
+    executable: /bin/bash
+
+- name: nodejs remove
+  package:
+    name: nodejs
+    state: absent
+
+- name: remove nodejs daemon from firewalld
+  firewalld:
+    service: nodejs
+    permanent: yes
+    state: disable
+
+- name: remove port 90 from firewalld
+  firewalld:
+    port: 90/tcp
+    permanent: yes
+    state: disable
+
+- name: nodejs tools remove
+  package:
+    name: npm git
+    state: absent
+
+- name: nodejs service start
+  systemd:
+    name: nodejs
+    state: started
+
+- name: nodejs service enable
+  systemd:
+    name: nodejs
+    enabled: yes
+
+- name: nodejs service stop
+  systemd:
+    name: nodejs
+    state: stopped
+
+- name: nodejs service disable
+  systemd:
+    name: nodejs
+    enabled: no
+
+- name: copy nodejs app from controller to node catalog
+  copy:
+    src: "{{ nodejs_app_directory_repo }}"
+    dest: "{{ nodejs_app_directory_runtime }}"
+    owner: "{{ nodejs_user }}"
+    group: "{{ nodejs_group }}"
+    mode: "{{ nodejs_app_directory_perm }}"
+
+- name: unpack nodejs app to catalog and remove archive with properly chmod
+  unarchive:
+    src: "{{ nodejs_app_directory_runtime }}"
+    dest: "{{ nodejs_app_directory_runtime }}"
+
+- name: dependencies installation by npm menager
+  shell: npm install
+  args:
+    executable: /bin/bash
+
+- name: build application by npm menager
+  shell: npm run build
+  args:
+    executable: /bin/bash
+
+- name: remove nodejs app from controller in node catalog
+
+- name: pm2 listing
+  shell: pm2 list
+  args:
+    executable: /bin/bash
+
+- name: start app by pm2
+  shell: pm2 start {{ app }}
+  args:
+    executable: /bin/bash
+
+- name: status app by pm2
+  shell: pm2 status {{ app }}
+  args:
+    executable: /bin/bash
+
+- name: reload app by pm2
+  shell: pm2 reload {{ app }}
+  args:
+    executable: /bin/bash
+
+- name: restart all app by pm2
+  shell: pm2 restart all
+  args:
+    executable: /bin/bash
+
+- name: reload all app by pm2
+  shell: pm2 reload all
+  args:
+    executable: /bin/bash
+
+- name: status pm2
+  shell: pm2 status {{ app }}
+  args:
+    executable: /bin/bash
+
+- name: delete app by pm2
+  shell: pm2 delete {{ app }}
+  args:
+    executable: /bin/bash
+
+- name: delete all app by pm2
+  shell: pm2 delete all
+  args:
+    executable: /bin/bash
+
+- name: stop app by pm2
+  shell: pm2 stop {{ app }}
+  args:
+    executable: /bin/bash
+
+- name: stop all app by pm2
+  shell: pm2 stop all
+  args:
+    executable: /bin/bash
+
+
+##deploy nodejs node playbook
+# dodanie usera nodejs z gidem 1101 #do common
+# instalacja nodejs npm pm2 #do common
+# wystartowanie i enablowanie nodejs #do common
+# zamontowanie NFSa z apkami # common
+
+##deploy nodejs app playbook
+# skopiowanie pliku z NFSa na host #do common
+# rozpakowanie pliku #do common folder files
+# usunięcie archiwum #do common
+# dodanie portu i usługi do firewalla #do common
+# instalacja zależności przez npm czyli npm install
+
+##usunięcie nodejs
+# jest chyba jakiś sposób żeby odwrócić playbook deployu? plus usunięcie i stponięcie procesów/plików
+# BEZ SUSUWANIA PLIKÓW! TO RĘCZNIE SOBIE MAJĄ LUDZIE ROBIĆ!
+
+##remove nodejs app
+# pm2 stop app.js
+# usunięcie plików #do common
+
+##nodejs app start/status/stop
+# pm2 start app.js
+# pm2 stop app.js
+# pm2 ls
+# ale nie ma state - nie ma modułu na to?
+
+# oba playbooki praktycznie bazują na taskach które powinny być napisane w common i tylko trzeba im przekazać odpowiednie dane.

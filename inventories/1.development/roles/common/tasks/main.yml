@@ -1,0 +1,68 @@
+---
+  # tasks file for common
+- name: Information about host
+  hosts: nodes
+  tasks:
+  - name: add epel-release repo
+    dnf:
+      name: epel-release
+      state: present
+
+  - name: check directory exists.
+    stat:
+      path: {{ path }}
+    register: dir_exists
+
+  - name: output when directory exists.
+    debug:
+      msg: "the directory is already exist"
+    when: dir_exists.stat.exists == true
+
+  - name: create directory if do not exists.
+    file:
+      path: {{ path }}
+      state: directory
+      mode: {{ chmod }}
+      owner: {{ owner }}
+      group: {{ group }}
+    when: dir_exists.stat.exists == false
+
+
+
+# konfiguracja ssh pod ansibla czyli playbook
+# skopiowanie klucza pbulicznego z kontrolera
+# połączenie z zapytaniem i ustawieniem yess dla fingerprinta
+# utworzenie usera ansible z guid 1100
+
+# dodanie / usuwanie / sprawdzenie usera z uidem
+# dodanie / usuwanie / sprawdzenie grupy z gidem i grupą
+# dnf update/ autoremove
+# instalacja/deinstalacja/status paczki
+# wystartowanie stopowanie status serwisu
+# enablowanie i disablowanie serwisu
+# zamontowanie / wymontowanie NFSa z apkami
+# mount / umount
+# dodanie/usunięcie do fstaba
+# dodanie/usunięcie do /etc/hosts
+
+# utworzenie katalogu usunięcie katalogu
+# skopiowanie pliku z do
+# rozpakowanie pliku z do
+# usunięcie z do
+# dodanie portu i usługi do firewalla
+# chown
+# chmod
+# get setfacl
+
+# przeniesienie pliku
+# usunięcie plików
+# find
+# locate
+# ls,stat,id dla pliku
+# touch
+# grep
+
+#utworzenie/usunięcie/status partycji
+#utworzenie/usunięcie/status pv/vg/lv
+#utworzenie/usunięcie/status vdo
+#utworzenie/usunięcie/status swap

@@ -1,0 +1,86 @@
+---
+- hosts: ann1
+  roles:
+    - nfs
+  tasks:
+  - name: add nfs user
+    user:
+      name: "{{ nfs_user }}"
+      uid: "{{ nfs_user_uid }}"
+      state: present
+
+  - name: nfs-utils installation
+    package:
+      name: nfs-utils
+      state: present
+
+  - name: change nfs domain name
+    lineinfile:
+      firstmatch: yes
+      path: /etc/idmapd.conf
+      regexp: '^#Domain = '
+      line: Domain = {{ nfs_domain_name }}
+
+  - name: create export file
+    file:
+      path: /etc/exports
+      state: touch
+
+  - name: change export file
+    lineinfile:
+      path: /etc/exports
+      line: "{{ nfs_share_path }} {{ nfs_share_adress }}{{ nfs_share_param }}"
+
+  - name: make directory for nfs share
+    file:
+      path: "{{ nfs_share_path }}"
+      mode: "{{ nfs_share_perm }}"
+      owner: "{{ nfs_user }}"
+      group: "{{ nfs_group }}"
+      state: directory
+
+  - name: make shakehand file in nfs share
+    file:
+      path: "{{ nfs_share_path }}/hello.txt"
+      mode: "{{ nfs_share_perm }}"
+      owner: "{{ nfs_user }}"
+      group: "{{ nfs_group }}"
+      state: touch
+
+  - name: enable and start autostart rpcbind after reboot
+    systemd:
+      state: started
+      daemon_reload: yes
+      enabled: yes
+      name: rpcbind
+
+  - name: enable and start autostart nfs-server after reboot
+    systemd:
+      state: started
+      daemon_reload: yes
+      enabled: yes
+      name: nfs-server
+
+  - name: enable nfs in firewalld
+    firewalld:
+      service: nfs
+      permanent: yes
+      state: enabled
+
+  - name: enable nfs3 in firewalld
+    firewalld:
+      service: nfs3
+      permanent: yes
+      state: enabled
+
+  - name: enable mountd in firewalld
+    firewalld:
+      service: mountd
+      permanent: yes
+      state: enabled
+
+  - name: enable rpc-bind in firewalld
+    firewalld:
+      service: rpc-bind
+      permanent: yes
+      state: enabled

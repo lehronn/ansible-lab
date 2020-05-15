@@ -1,0 +1,11 @@
+---
+- hosts: ann2
+  roles:
+    - nfs
+  tasks:
+  - name: Unmount NFS share
+    mount:
+      path: "{{ nfs_share_client_mp }}"
+      src: "{{ nfs_share_client_source }}:{{ nfs_share_path }}"
+      fstype: nfs
+      state: unmounted

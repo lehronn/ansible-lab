@@ -1,0 +1,16 @@
+---
+# tasks file for apache
+
+# instalacja apacze playbook
+# install httpd php common
+# instalacja phpmyadmin (chyba na apaczu to musi byc...)
+# enablowanie common
+# dodanie usermoda
+#
+# usunięcie apacze playbook
+# remove paczki z commona
+#
+# start stop restart apache
+# z commona
+
+# jakieś połączenie z db? plabook nie wiem jak to tam działa dokładnie chyba nie trzeba, to apki się mają łączyć

@@ -1,0 +1,8 @@
+---
+# nfs role-payload
+nfs_user: nfs
+nfs_user_uid: 1102
+nfs_group: nfs
+nfs_group_gid: 1102
+nfs_share_perm: 0750
+nfs_share_param: (rw,no_root_squash)

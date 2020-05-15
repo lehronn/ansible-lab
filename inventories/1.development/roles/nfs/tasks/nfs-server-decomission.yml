@@ -1,0 +1,69 @@
+---
+- hosts: ann1
+  roles:
+    - nfs
+  tasks:
+  - name: remove nfs user
+    user:
+      name: "{{ nfs_user }}"
+      uid: "{{ nfs_user_uid }}"
+      state: absent
+
+  - name: remove nfs domain name
+    lineinfile:
+      firstmatch: yes
+      path: /etc/idmapd.conf
+      regexp: "Domain = "
+      line: "#Domain = "
+      state: present
+
+  - name: remove export file
+    file:
+      path: /etc/exports
+      state: absent
+
+  - name: clean directory for nfs share
+    file:
+      path: "{{ nfs_share_path }}"
+      state: absent
+
+  - name: diable and stop autostart rpcbind after reboot
+    systemd:
+      state: stopped
+      enabled: no
+      name: rpcbind
+
+  - name: disable and stop autostart nfs-server after reboot
+    systemd:
+      state: stopped
+      enabled: no
+      name: nfs-server
+
+  - name: diable nfs in firewalld
+    firewalld:
+      service: nfs
+      permanent: yes
+      state: disabled
+
+  - name: diable nfs3 in firewalld
+    firewalld:
+      service: nfs3
+      permanent: yes
+      state: disabled
+
+  - name: diable mountd in firewalld
+    firewalld:
+      service: mountd
+      permanent: yes
+      state: disabled
+
+  - name: diable rpc-bind in firewalld
+    firewalld:
+      service: rpc-bind
+      permanent: yes
+      state: disabled
+
+  - name: nfs-utils remove
+    package:
+      name: nfs-utils
+      state: absent

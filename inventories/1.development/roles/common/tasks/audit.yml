@@ -1,0 +1,53 @@
+---
+- name: Information about host
+  hosts: nodes
+  tasks:
+  - name: print hostname
+    command: hostname
+    register: hostname
+
+  - name: print uname
+    command: uname -a
+    register: uname
+
+  - name: print uptime
+    command: uptime -p
+    register: uptime
+
+  - name: print memory state
+    command: free -h
+    register: memory
+
+  - name: print filesystem state
+    command: lsblk
+    register: filesystem
+
+
+  - name: Check SSH public key
+    command: /bin/cat /etc/hosts
+    register: cat
+
+  - name: print CPU state
+    command: ps
+    register: cpu
+
+  - name: Print hostname
+    debug: var=hostname.stdout
+
+  - name: Print uname
+    debug: var=uname.stdout
+
+  - name: Print uptime
+    debug: var=uptime.stdout
+
+  - name: Print memory
+    debug: var=memory.stdout
+
+  - name: Print filesystem
+    debug: var=filesystem.stdout
+
+  - name: Print cat
+    debug: var=cat.stdout
+
+  - name: Print cpu
+    debug: var=cpu.stdout

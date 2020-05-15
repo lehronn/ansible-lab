@@ -1,0 +1,52 @@
+---
+
+- hosts: nodejs
+  roles:
+    - nodejs
+  tasks:
+  - name: copy nodejs app from controller to node catalog
+    copy:
+      src: "{{ nodejs_app_directory_repo }}/{{ deploy_app_file }}"
+      dest: /tmp/app.zip
+      owner: "{{ nodejs_user }}"
+      group: "{{ nodejs_group }}"
+      mode: "{{ nodejs_app_directory_perm }}"
+
+  - name: unpack nodejs app to catalog and remove archive with properly chmod
+    unarchive:
+      src: /tmp/app.zip
+      dest: "{{ nodejs_app_directory_runtime }}"
+      owner: "{{ nodejs_user }}"
+      group: "{{ nodejs_group }}"
+      remote_src: yes
+
+  - name: delete app archive
+    file:
+      path: /tmp/app.zip
+      state: absent
+
+  - name: dependencies installation by npm menager
+    shell: cd {{ nodejs_app_directory_runtime | quote }}/{{ app_name | quote }} && npm install
+    args:
+      executable: /bin/bash
+
+  - name: build application by npm menager
+    shell: cd {{ nodejs_app_directory_runtime | quote }}/{{ app_name | quote }} && npm run build
+    args:
+      executable: /bin/bash
+
+  - name: add port to firewalld
+    firewalld:
+      port: "{{ deploy_app_port }}/{{ deploy_app_protocol }}"
+      permanent: yes
+      state: enabled
+
+  - name: start app by pm2
+    shell: cd {{ nodejs_app_directory_runtime | quote }}/{{ app_name | quote }} && pm2 start index.js
+    args:
+      executable: /bin/bash
+
+  - name: pm2 listing
+    shell: pm2 list
+    args:
+      executable: /bin/bash

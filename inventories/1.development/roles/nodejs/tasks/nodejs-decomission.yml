@@ -1,0 +1,45 @@
+---
+
+- hosts: nodejs
+  roles:
+    - nodejs
+  tasks:
+  - name: stop all aps by pm2
+    shell: pm2 stop all
+    args:
+      executable: /bin/bash
+    ignore_errors: yes
+
+  - name: turnoff pm2 autostart after reboot
+    shell: pm2 unstartup
+    args:
+      executable: /bin/bash
+    ignore_errors: yes
+
+  - name: remove pm2 menager by npm
+    shell: npm remove pm2@latest -g
+    args:
+      executable: /bin/bash
+    ignore_errors: yes
+
+  - name: remove nodejs
+    package:
+      name: nodejs
+      state: absent
+
+  - name: nodejs tools remove
+    package:
+      name: npm,git,unzip
+      state: absent
+
+  - name: remove directory for nodejs apps
+    file:
+      path: "{{ nodejs_app_directory_runtime }}"
+      mode: "{{ nodejs_app_directory_perm }}"
+      state: absent
+
+  - name: remove nodejs user
+    user:
+      name: "{{ nodejs_user }}"
+      uid: "{{ nodejs_user_uid }}"
+      state: absent

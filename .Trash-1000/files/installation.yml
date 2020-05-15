@@ -1,0 +1,13 @@
+---
+# vars file for nodejs
+- hosts: nodejs
+  vars:
+    nodejs_lts_version: "12.*"
+    nodejs_test_version: "14.*"
+    nodejs_user: nodejs
+    nodejs_user_uid: 1101
+    nodejs_group: nodejs
+    nodejs_group_gid: 1101
+    nodejs_app_directory_repo: /home/user/nfs/share/nodejs
+    nodejs_app_directory_runtime: /home/nodejs/applications
+    nodejs_app_directory_perm: 0750

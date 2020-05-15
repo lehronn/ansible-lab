@@ -1,0 +1,23 @@
+---
+- hosts: ann2
+  roles:
+    - nfs
+  tasks:
+  - name: remove nfs domain name
+    lineinfile:
+      firstmatch: yes
+      path: /etc/idmapd.conf
+      regexp: "Domain = "
+      line: "#Domain = "
+      state: present
+
+  - name: nfs-utils remove
+    package:
+      name: nfs-utils
+      state: absent
+
+  - name: remove nfs user
+    user:
+      name: "{{ nfs_user }}"
+      uid: "{{ nfs_user_uid }}"
+      state: absent

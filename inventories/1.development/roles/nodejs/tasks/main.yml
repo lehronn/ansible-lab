@@ -1,0 +1,6 @@
+---
+- name: include default variables
+  include_vars: role-payload.yml
+
+- name: include default variables
+  include_vars: task-payload.yml
