@@ -1,0 +1,33 @@
+---
+- hosts: ann3
+  roles:
+    - role: ftp
+  tasks:
+  - name: disable and stop vsftpd
+    systemd:
+      state: stopped
+      daemon_reload: no
+      enabled: no
+      name: vsftpd
+
+  - name: enable vsftpd in firewall
+    firewalld:
+      service: ftp
+      permanent: yes
+      state: disabled
+
+  - name: Set ftpd_full_access flag off and keep it persistent across reboots
+    seboolean:
+      name: ftpd_full_access
+      state: no
+      persistent: yes
+
+  - name: vsftpd deinstallation
+    package:
+      name: vsftpd,python3-libsemanage
+      state: absent
+  - name: remove ftp user
+    user:
+      name: "{{ ftp_user }}"
+      uid: "{{ ftp_user_uid }}"
+      state: absent

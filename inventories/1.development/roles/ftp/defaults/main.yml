@@ -1,2 +1,18 @@
 ---
-# defaults file for mariadb
+ftp_user: ftp
+ftp_user_uid: 1103
+ftp_group: ftp
+ftp_group_gid: 1103
+ftp_anonymous_enable: NO
+ftp_ascii_upload_enable: YES
+ftp_ascii_download_enable: YES
+ftp_chroot_local_user: YES
+ftp_chroot_list_enable: NO
+ftp_chroot_list_file: chroot_list_file=/etc/vsftpd/chroot_users
+ftp_ls_recurse_enable: YES # if listning IPv4 and IPv6 both, specify [NO]
+ftp_listen: YES
+ftp_listen_ipv6: NO
+ftp_local_root: local_root=/home/
+ftp_use_localtime: YES
+ftp_seccomp_sandbox: YES
+ftp_share_perm: 0700

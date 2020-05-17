@@ -1,14 +1,26 @@
 ---
-# tasks file for mariadb
+  - name: make sure configuration directory exists
+    file:
+      path: /etc/vsftpd
+      mode: 0777
+      owner: root
+      group: root
+      state: directory
 
-# instalacja mariadb plabook
-# instalacja phpmyadmin (chyba na apaczu to musi byc...) z commonu
-# enablowanie z commonu
-# konfiguracja bazy danych (hasło roota i coś tam jeszcze)
-#
-# dodanie db
-#
-# usunięcie
-#
-# status db
-#
+  - name: setting up vsftpd with template file
+    template:
+      src: vsftpd.j2
+      dest: /etc/vsftpd/vsftpd.conf
+      owner: root
+      group: root
+      mode: 0600
+      backup: true
+
+  - name: setting up vsftpd with template file
+    template:
+      src: chroot_users.j2
+      dest: /etc/vsftpd/chroot_users
+      owner: root
+      group: root
+      mode: 0600
+      backup: true

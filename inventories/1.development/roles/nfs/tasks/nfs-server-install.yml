@@ -42,7 +42,7 @@
   - name: make shakehand file in nfs share
     file:
       path: "{{ nfs_share_path }}/hello.txt"
-      mode: "{{ nfs_share_perm }}"
+      mode: 0777
       owner: "{{ nfs_user }}"
       group: "{{ nfs_group }}"
       state: touch

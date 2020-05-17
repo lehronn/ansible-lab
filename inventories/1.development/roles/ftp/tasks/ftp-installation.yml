@@ -1,0 +1,34 @@
+---
+- hosts: ann3
+  roles:
+    - role: ftp
+  tasks:
+  - name: add ftp user
+    user:
+      name: "{{ ftp_user }}"
+      uid: "{{ ftp_user_uid }}"
+      state: present
+
+  - name: vsftpd installation
+    package:
+      name: vsftpd,python3-libsemanage
+      state: present
+
+  - name: Set ftpd_full_access flag on and keep it persistent across reboots
+    seboolean:
+      name: ftpd_full_access
+      state: yes
+      persistent: yes
+
+  - name: enable vsftpd in firewall
+    firewalld:
+      service: ftp
+      permanent: yes
+      state: enabled
+
+  - name: enable and start autostart vsftpd after reboot
+    systemd:
+      state: started
+      daemon_reload: yes
+      enabled: yes
+      name: vsftpd
