@@ -1,0 +1,38 @@
+---
+- hosts: lamp
+  roles:
+    - lamp
+  tasks:
+  - name: mysql python connector installing
+    package:
+      name: python3-PyMySQL
+      state: absent
+
+  - name: add mariadb service to firewalld
+    firewalld:
+      service: mysql
+      permanent: yes
+      state: disabled
+
+  - name: disable and start mariadb
+    shell: systemctl disable --now mariadb
+    args:
+      executable: /bin/bash
+
+  - name: disable and stop httpd/apache
+    systemd:
+      state: stopped
+      daemon_reload: yes
+      enabled: no
+      name: httpd
+
+  - name: remove port to firewalld
+    firewalld:
+      service: http
+      permanent: yes
+      state: disabled
+
+  - name: httpd/apache + php + mariadb installation
+    package:
+      name: httpd,php,mariadb-server,python3-libsemanage,unzip,php-pdo,php-pecl-zip,php-json,php-common,php-fpm,php-mbstring,php-cli,php-mysqlnd
+      state: absent

@@ -28,7 +28,9 @@ ansible-playbook ./roles/common/tasks/user.yml --extra-vars "vaction=add vlogin=
 12. Develop readme
 13. Develop Getting started
 14. Develop Manual
-
+15. python3-libsemanage in ftp and lamp roles should be installed on all remote hosts by common role
+16. add variable to up of all templates with warning about manual edition
+17. add epel adding to common and remove from others roles
 
 
 

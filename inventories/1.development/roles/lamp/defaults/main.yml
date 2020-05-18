@@ -1,2 +1,28 @@
 ---
-# defaults file for apache
+#httpd/apache defaults for /etc/httpd/conf/httpd.conf
+httpd_server_admin: root@lamp.ansible.com               #line 89
+httpd_server_name: lamp.ansible.com:80                  #line 98
+httpd_server_options: FollowSymLinks                    #line 147
+httpd_server_override: All                              #line 154
+httpd_server_indexing: index.php index.html index.cgi   #line 167
+httpd_server_tokens : ServerTokens Prod                 #line 358
+httpd_server_alive: KeepAlive On                        #line 359
+
+#userdir apache defaults for /etc/httpd/conf.d/userdir.conf
+httpd_multiuser_status: enabled                         # line 17
+httpd_multiuser_dir: public_html                        # line 24
+httpd_multiuser_override: FileInfo AuthConfig Limit Indexes                     # line 32
+httpd_multiuser_options: MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec # line  33
+
+#mariadb defaults for
+mariadb_root_login: root
+mariadb_root_password: root
+mariadb_ansible_fqdn: ann2
+
+#sqldaddy defaults for
+adminer_user: root
+adminer_group: root
+adminer_app_directory_perm: 0755
+adminer_directory_path: /home/user/nfs/share/software/
+adminer_file_name: adminer-4.7.7.zip
+adminer_app_directory_path: /var/www/html/

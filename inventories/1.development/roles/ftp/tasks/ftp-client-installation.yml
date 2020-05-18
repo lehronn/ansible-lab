@@ -1,0 +1,9 @@
+---
+- hosts: ann3
+  roles:
+    - role: ftp
+  tasks:
+  - name: lftp installation
+    package:
+      name: lftp
+      state: present

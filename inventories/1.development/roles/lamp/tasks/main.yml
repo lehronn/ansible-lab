@@ -1,16 +1,65 @@
 ---
-# tasks file for apache
+  - name: make sure configuration directory exists
+    file:
+      path: /etc/httpd/conf/
+      mode: 0751
+      owner: root
+      group: root
+      state: directory
 
-# instalacja apacze playbook
-# install httpd php common
-# instalacja phpmyadmin (chyba na apaczu to musi byc...)
-# enablowanie common
-# dodanie usermoda
-#
-# usunięcie apacze playbook
-# remove paczki z commona
-#
-# start stop restart apache
-# z commona
+  - name: make sure configuration directory exists
+    file:
+      path: /var/www/html/
+      mode: 0751
+      owner: root
+      group: root
+      state: directory
 
-# jakieś połączenie z db? plabook nie wiem jak to tam działa dokładnie chyba nie trzeba, to apki się mają łączyć
+  - name: make sure configuration directory exists
+    file:
+      path: /etc/httpd/conf.d/
+      mode: 0751
+      owner: root
+      group: root
+      state: directory
+
+  - name: setting up apache with template file
+    template:
+      src: httpd.conf.j2
+      dest: /etc/httpd/conf/httpd.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: true
+
+  - name: setting up welcome file
+    template:
+      src: index.php.j2
+      dest: /var/www/html/index.php
+      owner: apache
+      group: apache
+      mode: 0644
+      backup: true
+
+  - name: setting up userdir for apache with template file
+    template:
+      src: userdir.conf.j2
+      dest: /etc/httpd/conf.d/userdir.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: true
+
+  - name: setting up mariadb credentials with template file
+    template:
+      src: my.cnf.j2
+      dest: /root/.my.cnf
+      owner: root
+      group: root
+      mode: 0600
+      backup: true
+
+  - name: Add epel-release repo
+    yum:
+      name: epel-release
+      state: present

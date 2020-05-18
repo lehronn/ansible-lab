@@ -1,0 +1,107 @@
+---
+- hosts: lamp
+  roles:
+    - lamp
+  tasks:
+  - name: httpd/apache + php + mariadb installation
+    package:
+      name: httpd,php,mariadb-server,python3-libsemanage,unzip,php-pdo,php-pecl-zip,php-json,php-common,php-fpm,php-mbstring,php-cli,php-mysqlnd
+      state: present
+
+  - name: remove welcome website
+    file:
+      path: /etc/httpd/conf.d/welcome.conf
+      state: absent
+
+  - name: Set httpd_enable_homedirs flag on and keep it persistent across reboots
+    seboolean:
+      name: httpd_enable_homedirs
+      state: yes
+      persistent: yes
+
+  - name: restore selinux context
+    shell: restorecon -R /home
+    args:
+      executable: /bin/bash
+
+  - name: change home chmod
+    file:
+      path: /home/user
+      mode: 0711
+      state: directory
+
+  - name: make public apache directory for user user
+    file:
+      path: /home/user/public_html
+      mode: 0755
+      state: directory
+
+  - name: enable and start httpd/apache
+    systemd:
+      state: started
+      daemon_reload: yes
+      enabled: yes
+      name: httpd
+
+  - name: enable and start mariadb
+    shell: systemctl enable --now mariadb
+    args:
+      executable: /bin/bash
+
+  - name: add http service to firewalld
+    firewalld:
+      service: http
+      permanent: yes
+      state: enabled
+
+  - name: add mariadb service to firewalld
+    firewalld:
+      service: mysql
+      permanent: yes
+      state: enabled
+
+  - name: mysql python connector installing
+    package:
+      name: python3-PyMySQL
+      state: present
+
+  # 'localhost' needs to be the last item for idempotency, see
+  # http://ansible.cc/docs/modules.html#mysql-user
+  - name: update mysql root password for all root accounts
+    mysql_user: name={{ mariadb_root_login }} host={{ item }} password={{ mariadb_root_password }}
+    with_items:
+      - "{{ ansible_hostname }}"
+      - 127.0.0.1
+      - ::1
+      - localhost
+
+  - name: delete anonymous MySQL server user for $server_hostname
+    action: mysql_user user="" host="{{ mariadb_ansible_fqdn }}" state="absent"
+
+  - name: delete anonymous MySQL server user for localhost
+    action: mysql_user user="" state="absent"
+
+  - name: remove the MySQL test database
+    action: mysql_db db=test state=absent
+
+  - name: copy adminer app from controller to node catalog
+    copy:
+      src: "{{ adminer_directory_path }}/{{ adminer_file_name }}"
+      dest: /tmp/adminer.zip
+      owner: "{{ adminer_user }}"
+      group: "{{ adminer_group }}"
+      mode: "{{ adminer_app_directory_perm }}"
+
+  - name: unpack adminer app to catalog and remove archive with properly chmod
+    unarchive:
+      src: /tmp/adminer.zip
+      dest: "{{ adminer_app_directory_path }}"
+      owner: "{{ adminer_user }}"
+      group: "{{ adminer_group }}"
+      mode: "{{ adminer_app_directory_perm }}"
+      remote_src: yes
+
+  - name: delete adminer archive
+    file:
+      path: /tmp/adminer.zip
+      state: absent
