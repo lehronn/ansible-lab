@@ -1,0 +1,55 @@
+---
+- hosts: lamp
+  roles:
+    - lamp
+  tasks:
+  - name: php modules and dependencies installation
+    package:
+      name: php-mysqlnd,php-gd,php-xml,php-bcmath,php-ldap
+      state: present
+
+  - name: copy zabbix package from our repository
+    copy:
+      src: "{{ zabbix_app_directory_repo }}/{{ zabbix_app_file }}"
+      dest: /tmp/zabbix.rpm
+      owner: "{{ nodejs_user }}"
+      group: "{{ nodejs_group }}"
+      mode: "{{ nodejs_app_directory_perm }}"
+
+  - name: zabbix installation
+    package:
+      name: /tmp/zabbix.rpm
+      state: present
+
+  - name: delete zabbix rpm archive from tmp after installation
+    file:
+      path: /tmp/zabbix.rpm
+      state: absent
+
+  - name: restart httpd after zabbix installation
+    shell: systemctl restart httpd
+    args:
+      executable: /bin/bash
+
+  - name: zabbix agent installation
+    package:
+      name: zabbix-server-mysql,zabbix-web-mysql,zabbix-agent,zabbix-get
+      state: present
+
+- name: "MySQL | Create database"
+  mysql_db:
+    name: "{{ zabbix_server_dbname }}"
+    login_user:
+    login_password:
+    state: present
+
+- name: "MySQL | Create database user"
+  mysql_user:
+    login_host:
+    login_user:
+    login_password:
+    name: "{{ zabbix_server_dbuser }}"
+    password: "{{ zabbix_server_dbpassword }}"
+    priv: "{{ zabbix_server_dbname }}.*:ALL"
+    host: "{{ zabbix_server_privileged_host }}"
+    state: present

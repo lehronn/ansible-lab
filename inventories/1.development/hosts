@@ -1,5 +1,9 @@
 ### functional groups ###
 
+[monitoring]
+anc0
+ann2
+
 [nfs]
 anc0
 ann1
@@ -23,6 +27,11 @@ ann3
 ann4
 
 [nodejs]
+ann4
+
+[ansible]
+anc0
+ann3
 ann4
 
 [middleware:children]

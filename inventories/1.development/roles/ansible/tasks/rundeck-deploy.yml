@@ -1,0 +1,36 @@
+---
+- hosts: localhost
+  roles:
+    - ansible
+  tasks:
+  - name: java and ansible installation
+    package:
+      name: java-1.8.0-openjdk,ansible
+      state: present
+
+  - name: rundeck rpm repository installation
+    package:
+      name: http://repo.rundeck.org/latest.rpm
+      update_cache: yes
+      state: present
+
+  - name: rundeck installation
+    package:
+      name: rundeck
+      state: present
+
+  - name: add rundeck service to firewalld
+    firewalld:
+      port: 4440/tcp
+      permanent: yes
+      state: enabled
+
+  - name: enable and start rundeck
+    systemd:
+      state: started
+      daemon_reload: yes
+      enabled: yes
+      name: rundeckd
+
+#dodać restart firewalla po dodaniu portu
+#dodać template z plikiem i musi się tam w zmiennej podmieniać ip na ip hosta!
